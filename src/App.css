@@ -1,7 +1,11 @@
 .page {
-  width: min(1040px, 92vw);
-  margin: 0 auto;
-  padding: 2rem 0 4rem;
+  width: 100%;
+  margin: 0;
+  padding: 0 0 4rem;
+}
+
+.content-wrap {
+  padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 0;
 }
 
 .nav {
@@ -28,30 +32,44 @@
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 3rem;
-  border-radius: 24px;
-  background: linear-gradient(135deg, var(--surface), var(--surface-alt));
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 clamp(1rem, 4vw, 3rem) clamp(2rem, 6vh, 4rem);
+  background-image:
+    linear-gradient(180deg, rgba(9, 14, 26, 0.12) 15%, rgba(9, 14, 26, 0.8) 85%),
+    url('./assets/hero.png');
+  background-size: cover;
+  background-position: center;
 }
 
 .hero::after {
   content: '';
   position: absolute;
-  width: 320px;
-  height: 320px;
-  right: -120px;
-  top: -140px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.14) 0, rgba(59, 130, 246, 0) 70%);
+  inset: 0;
+  background: linear-gradient(90deg, rgba(9, 14, 26, 0.5) 0%, rgba(9, 14, 26, 0) 55%);
   pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: min(84ch, 92vw);
+}
+
+.hero-nav {
+  position: absolute;
+  top: clamp(1rem, 2.5vw, 2rem);
+  right: clamp(1rem, 2.5vw, 2rem);
+  margin: 0;
+  z-index: 2;
 }
 
 .eyebrow {
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--muted);
+  color: rgba(226, 232, 240, 0.9);
   font-size: 0.82rem;
 }
 
@@ -61,8 +79,18 @@ h1 {
   line-height: 1.08;
 }
 
+.hero-title {
+  margin: 0.2rem 0 0.8rem;
+  font-size: clamp(3.2rem, 13vw, 10rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #f8fafc;
+}
+
 .intro {
   max-width: 64ch;
+  color: rgba(226, 232, 240, 0.95);
 }
 
 .hero-cta {
@@ -75,8 +103,10 @@ h1 {
 .hero-cta a {
   padding: 0.7rem 1rem;
   border-radius: 10px;
-  background: var(--chip);
-  border: 1px solid var(--border);
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.42);
+  border: 1px solid rgba(203, 213, 225, 0.34);
+  backdrop-filter: blur(4px);
 }
 
 main {
@@ -181,11 +211,21 @@ h3 {
   }
 
   .hero {
-    padding: 1.6rem;
+    min-height: 90vh;
+    padding-bottom: 2rem;
   }
 
   .nav {
     justify-content: flex-start;
     flex-wrap: wrap;
+  }
+
+  .hero-nav {
+    left: clamp(1rem, 2.5vw, 2rem);
+    right: auto;
+  }
+
+  .hero-title {
+    font-size: clamp(2.4rem, 15vw, 4.8rem);
   }
 }
