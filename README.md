@@ -50,3 +50,17 @@ Run lint checks:
 
 - This repository was migrated from a static HTML portfolio to a React + Vite application.
 - Update content primarily in [src/App.jsx](src/App.jsx).
+
+## Deploying to GitHub Pages
+
+This repo now includes a workflow at [.github/workflows/deploy.yml](.github/workflows/deploy.yml) that builds and deploys on push to `main` or `master`.
+
+One-time setup in GitHub:
+
+1. Open repository **Settings** → **Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Push to `main`/`master` (or run the workflow manually from **Actions**).
+
+Notes:
+
+- [vite.config.js](vite.config.js) auto-sets `base` during GitHub Actions builds so assets resolve correctly on project pages.
