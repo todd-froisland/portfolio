@@ -46,12 +46,9 @@ Run lint checks:
 
 `npm run lint`
 
-## Notes
-
-- This repository was migrated from a static HTML portfolio to a React + Vite application.
-- Update content primarily in [src/App.jsx](src/App.jsx).
-
 ## Deploying to GitHub Pages
+
+Live site: [https://todd-froisland.github.io/portfolio/](https://todd-froisland.github.io/portfolio/)
 
 This repo now includes a workflow at [.github/workflows/deploy.yml](.github/workflows/deploy.yml) that builds and deploys on push to `main` or `master`.
 
