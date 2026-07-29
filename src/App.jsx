@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   Box,
   Button,
@@ -38,15 +40,73 @@ const projects = [
   {
     name: "HipDeck",
     description:
-      "A digital signage platform currently in use by small businesses, non-profits, and enterprise clients like Hilton & Chic-Fil-A.",
+      "A digital signage platform currently in use by small businesses, non-profits, and enterprise clients like Hilton & Chic-Fil-A. We have clients in the US, Canada, the UK, Norway, Austria, and a few other countries.",
     company: "HipDeck",
-    startDate: "2021",
+    startDate: "2024",
     endDate: "Present",
     projectDetails:
-      "Add a deeper description of the project scope, architecture, business context, and scale here.",
-    contributions:
-      "Add details about your direct contributions, technical decisions, and ownership areas here.",
+      "HipDeck was inspired by the need for a simple, reliable, and cost-effective digital signage solution at current place of work. I decided to pursue this as my own side project, and I built the platform from the ground up, including the web app, backend services, and the custom signage player. The platform is designed to be easy to use, with a focus on simplicity and reliability. I built it using React and Node with a mysql database built on planetscale systems. Hosting and CI/CD pipelines are handled through Digital Ocean. The signage player is a web-based app available on Android app store, FireTV, and web browsers.",
+    contributions: `I am the sole developer and founder of HipDeck, responsible for the entire tech stack, including the web app, backend services, and signage player. I made all technical decisions, designed the architecture, and implemented features based on user feedback. I also continue managing deployment, monitoring, new features, and maintenance of the platform. I occasionally have to help clients with questions and issues, but the platform is designed to be self-service and easy to use.`,
     stack: [],
+    personalThoughts: `
+### Market Observations
+Digital signage is a mature and highly commoditized industry. Customers already know what a digital signage platform should do, so expectations are high from day one. Feature parity across competitors is surprisingly close, with most differentiation coming down to usability, reliability, and pricing.
+
+That dynamic has become even more pronounced with AI-assisted software development. New features that once required weeks of engineering can often be replicated in days—or even hours. Sustainable advantage increasingly comes from execution, product quality, customer understanding, and operational excellence rather than an ever-growing feature list. It may be possible to create a business moat using viewing data, but privacy immediately becomes a concern, and scale of available resources currently prohibits development in that direction.
+
+Despite the competitive landscape, the demand for digital signage software remains strong. Restaurants, retailers, schools, churches, offices, and healthcare facilities all need reliable ways to manage displays. HipDeck was my attempt to build a product that met those needs while exploring where the industry could evolve next.
+
+### Go-to-Market
+I launched HipDeck through a Lifetime Deal (LTD), promoting it primarily within LTD Facebook communities and through YouTube influencers.
+
+The launch had four primary goals:
+
+* Generate enough revenue to offset infrastructure costs and create runway.
+* Acquire an initial group of active users.
+* Establish a continuous feedback loop.
+* Gain exposure within the digital signage community.
+
+The strategy accomplished each of those goals. Early adopters became active participants in the product's development, providing practical feedback that directly influenced engineering priorities.
+
+### Engineering Challenges
+
+#### Reliable Media Playback
+One of the largest technical challenges was building a player that could reliably handle media playback on low-powered hardware, particularly Android TV boxes and Amazon Fire TV devices.
+
+Desktop browsers and higher-end hardware rarely exposed issues. Low-cost commercial devices did. Much of the player architecture evolved through repeated testing on constrained hardware, improving video decoding, asset caching, and playback reliability until the experience became dependable even on inexpensive devices.
+
+#### Real-Time Infrastructure
+
+Users expect screens to update immediately when content changes, which required building a scalable real-time architecture.
+
+HipDeck uses Redis as a distributed coordination layer for WebSocket connections, allowing multiple application instances to communicate seamlessly across the infrastructure. What initially seemed like a simple socket implementation ultimately became an exercise in distributed systems and state management.
+
+#### White Label Architecture
+
+As the product matured, one of the most requested features was a fully white-labeled version of HipDeck.
+
+Supporting multiple independently branded deployments required architectural changes far beyond swapping logos and colors. Tenant isolation, branding configuration, domain management, permissions, billing, and deployment strategies all became first-class concerns. Building for multi-tenancy has become one of the more interesting architectural problems within the platform.
+
+### Looking Forward
+AI remains one of the most interesting opportunities for HipDeck.
+
+Digital signage exists in the background of daily life. Unlike productivity software, users generally don't want to actively manage it—they simply expect it to work.
+
+That makes automation a natural direction for the product. Rather than adding AI as another feature, the long-term vision is to reduce the amount of management required altogether: allowing displays to understand a brand, generate appropriate content, monitor themselves, and require as little human intervention as possible.
+
+Ultimately, I think the future of digital signage isn't giving users more controls—it's building systems that require fewer of them.
+
+### Personal Reflections
+
+One thing I've learned about myself through HipDeck is that I get the most fulfillment from working on problems that have a direct impact on the bottom line, whether that means improving business outcomes or contributing to something with broader impact. Building software is rewarding, but building software that tangibly improves people's lives is even more so.
+
+HipDeck also taught me something about the kinds of problems I enjoy solving. Mature markets have their place, but there's a fundamental difference between catching up and pushing into new territory. Catching up is necessary; creating something that didn't exist before is exciting.
+
+Digital signage itself is a mature industry, and I don't know how much influence HipDeck—or digital signage as a whole—will ultimately have on the future. It's not the frontier that everyone is writing about. But I don't think that's a reason not to build.
+
+Every meaningful advancement begins somewhere, with someone improving the small corner of the world they're responsible for. Sometimes the work is simply to lift where you stand, solve the problems in front of you, and leave the landscape a little better than you found it.
+
+HipDeck has been my opportunity to do exactly that.`,
     url: "https://hipdeck.co",
     role: "Founder & Software Engineer",
     logo: hipdeckLogo,
@@ -154,6 +214,83 @@ const projectPosterTints = [
   "rgba(5, 150, 105, 0.3)",
 ];
 
+const MODAL_IMAGE_ROTATE_MS = 5500;
+
+const MarkdownBlock = ({ children }) => (
+  <Box
+    sx={{
+      color: "rgba(226,232,240,0.9)",
+      lineHeight: 1.75,
+      "& p": {
+        my: 0,
+      },
+      "& p + p": {
+        mt: 1,
+      },
+      "& ul, & ol": {
+        my: 0.6,
+        pl: 2.4,
+      },
+      "& li": {
+        mt: 0.3,
+      },
+      "& code": {
+        fontFamily:
+          '"JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+        fontSize: "0.86em",
+        px: 0.45,
+        py: 0.12,
+        borderRadius: 0.5,
+        backgroundColor: "rgba(15,23,42,0.72)",
+      },
+      "& pre": {
+        my: 1,
+        p: 1,
+        overflowX: "auto",
+        borderRadius: 1,
+        backgroundColor: "rgba(15,23,42,0.72)",
+      },
+      "& pre code": {
+        p: 0,
+        backgroundColor: "transparent",
+      },
+      "& blockquote": {
+        m: 0,
+        my: 1,
+        pl: 1.2,
+        borderLeft: "3px solid rgba(148,163,184,0.5)",
+        color: "rgba(226,232,240,0.82)",
+      },
+      "& a": {
+        color: "#93c5fd",
+        textDecorationColor: "rgba(147,197,253,0.7)",
+      },
+      "& table": {
+        width: "100%",
+        borderCollapse: "collapse",
+        mt: 1,
+      },
+      "& th, & td": {
+        border: "1px solid rgba(148,163,184,0.4)",
+        px: 1,
+        py: 0.5,
+        textAlign: "left",
+      },
+    }}
+  >
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      components={{
+        a: ({ ...props }) => (
+          <Link target="_blank" rel="noreferrer" {...props} />
+        ),
+      }}
+    >
+      {children || ""}
+    </ReactMarkdown>
+  </Box>
+);
+
 function App() {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
@@ -198,6 +335,22 @@ function App() {
       current >= modalImages.length - 1 ? 0 : current + 1,
     );
   };
+
+  useEffect(() => {
+    if (!projectModalOpen || modalImages.length <= 1) {
+      return undefined;
+    }
+
+    const imageCycleTimer = window.setTimeout(() => {
+      setModalImageIndex((current) =>
+        current >= modalImages.length - 1 ? 0 : current + 1,
+      );
+    }, MODAL_IMAGE_ROTATE_MS);
+
+    return () => {
+      window.clearTimeout(imageCycleTimer);
+    };
+  }, [projectModalOpen, modalImageIndex, modalImages.length]);
 
   const scrollToSectionWithHeaderOffset = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -577,9 +730,11 @@ function App() {
           <Typography
             sx={{ maxWidth: "64ch", color: "rgba(226,232,240,0.95)" }}
           >
-            Senior full stack software engineer and technical founder building
-            enterprise retail software, production SaaS platforms, payment
-            systems, and cloud infrastructure.
+            By day building e-commerce and POS systems for Purple Innovation. 
+            <br/>
+            By night building BranchOps - an agent orchestration platform. 
+            <br/>
+            Built and continually working on HipDeck Digital Signage.
           </Typography>
           <Stack
             direction="row"
@@ -769,7 +924,9 @@ function App() {
               maxWidth: "62ch",
               fontSize: { xs: "0.95rem", md: "1.05rem" },
               opacity: projectsRevealed ? 1 : 0,
-              transform: projectsRevealed ? "translateY(0)" : "translateY(-16px)",
+              transform: projectsRevealed
+                ? "translateY(0)"
+                : "translateY(-16px)",
               transition:
                 "opacity 520ms ease 120ms, transform 620ms cubic-bezier(0.22, 1, 0.36, 1) 120ms",
             }}
@@ -946,7 +1103,10 @@ function App() {
                         pb: "14px !important",
                       }}
                     >
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontWeight: 700, lineHeight: 1.2 }}
+                      >
                         {project.name}
                       </Typography>
                       <Typography
@@ -1135,7 +1295,8 @@ function App() {
             sx: {
               backdropFilter: "blur(12px)",
               backgroundColor: "rgba(0, 0, 0, 0.56)",
-              transition: "backdrop-filter 260ms ease, background-color 260ms ease",
+              transition:
+                "backdrop-filter 260ms ease, background-color 260ms ease",
             },
           },
         }}
@@ -1149,7 +1310,8 @@ function App() {
             sx={{
               position: "fixed",
               inset: 0,
-              background: "linear-gradient(180deg, #000000 0%, #060606 60%, #0d0d0d 100%)",
+              background:
+                "linear-gradient(180deg, #000000 0%, #060606 60%, #0d0d0d 100%)",
               overflowY: "auto",
               p: { xs: 2, md: 4 },
               transition: "filter 240ms ease, transform 240ms ease",
@@ -1200,12 +1362,16 @@ function App() {
                 sx={{
                   display: "grid",
                   gap: 2,
-                  gridTemplateColumns: { xs: "1fr", md: "1fr 2fr" },
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    md: "minmax(0, 1fr) minmax(0, 2fr)",
+                  },
                   gridTemplateAreas: {
                     xs: '"media" "text"',
                     md: '"text media"',
                   },
                   alignItems: "start",
+                  maxHeight: { xs: "none", md: "calc(100dvh - 170px)" },
                   "@keyframes modalTextIn": {
                     "0%": {
                       opacity: 0,
@@ -1224,193 +1390,304 @@ function App() {
                       opacity: 1,
                     },
                   },
-                }}
-              >
-              <Box
-                key={`modal-text-${modalAnimationKey}`}
-                sx={{
-                  gridArea: "text",
-                  opacity: 0,
-                  animation:
-                    "modalTextIn 420ms cubic-bezier(0.22, 1, 0.36, 1) 70ms forwards",
-                  "@media (prefers-reduced-motion: reduce)": {
-                    opacity: 1,
-                    animation: "none",
-                  },
-                }}
-              >
-                <Typography sx={{ color: "rgba(226,232,240,0.7)", letterSpacing: "0.04em", textTransform: "uppercase", fontSize: "0.8rem" }}>
-                  {selectedProject?.role}
-                </Typography>
-                <Typography sx={{ mt: 0.7, color: "rgba(226,232,240,0.82)", fontSize: "0.92rem" }}>
-                  {selectedProject?.company} · {selectedProject?.startDate} — {selectedProject?.endDate}
-                </Typography>
-                <Typography sx={{ mt: 1.25, color: "rgba(226,232,240,0.92)", lineHeight: 1.65 }}>
-                  {selectedProject?.description || "Project details coming soon."}
-                </Typography>
-
-                <Typography sx={{ mt: 2.25, color: "grey.100", fontWeight: 700 }}>
-                  Project details
-                </Typography>
-                <Typography sx={{ mt: 1, color: "rgba(226,232,240,0.9)", lineHeight: 1.75 }}>
-                  {selectedProject?.projectDetails || "Add in-depth project details here."}
-                </Typography>
-
-                <Typography sx={{ mt: 2.25, color: "grey.100", fontWeight: 700 }}>
-                  My thoughts on the project
-                </Typography>
-                <Typography sx={{ mt: 1, color: "rgba(226,232,240,0.9)", lineHeight: 1.75 }}>
-                  {selectedProject?.thoughts ||
-                    "Add your personal perspective here: what made this project meaningful, what you learned, and what you would improve next."}
-                </Typography>
-
-                <Typography sx={{ mt: 2.25, color: "grey.100", fontWeight: 700 }}>
-                  What I contributed
-                </Typography>
-                <Typography sx={{ mt: 1, color: "rgba(226,232,240,0.9)", lineHeight: 1.75 }}>
-                  {selectedProject?.contributions || "Add your direct contributions here."}
-                </Typography>
-
-                <Stack direction="row" spacing={0.8} useFlexGap flexWrap="wrap" sx={{ mt: 2 }}>
-                  {(selectedProject?.stack || []).map((item) => (
-                    <Chip
-                      key={item}
-                      size="small"
-                      label={item}
-                      sx={{
-                        color: "grey.100",
-                        backgroundColor: "rgba(15,23,42,0.72)",
-                        border: "1px solid rgba(203,213,225,0.25)",
-                      }}
-                    />
-                  ))}
-                </Stack>
-
-                <Button
-                  href={selectedProject?.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  variant="outlined"
-                  sx={{ mt: 2.25, color: "grey.50", borderColor: "rgba(203,213,225,0.34)" }}
-                >
-                  Visit Project
-                </Button>
-              </Box>
-
-              <Box
-                key={`modal-image-${modalAnimationKey}`}
-                sx={{
-                  gridArea: "media",
-                  height: {
-                    xs: "min(52vh, 380px)",
-                    md: "min(62vh, 640px)",
-                  },
-                  maxHeight: "calc(100dvh - 170px)",
-                  borderRadius: 1.5,
-                  overflow: "hidden",
-                  border: "1px solid rgba(203,213,225,0.2)",
-                  backgroundColor: "rgba(15,23,42,0.5)",
-                  position: "relative",
-                  opacity: 0,
-                  animation: "modalImageIn 460ms ease 190ms forwards",
-                  "@media (prefers-reduced-motion: reduce)": {
-                    opacity: 1,
-                    animation: "none",
+                  "@keyframes modalIndicatorFill": {
+                    "0%": {
+                      transform: "scaleX(0)",
+                    },
+                    "100%": {
+                      transform: "scaleX(1)",
+                    },
                   },
                 }}
               >
                 <Box
-                  component="img"
-                  src={activeModalImage}
-                  alt={`${selectedProject?.name || "Project"} preview ${modalImageIndex + 1}`}
-                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
+                  key={`modal-text-${modalAnimationKey}`}
+                  sx={{
+                    gridArea: "text",
+                    height: { xs: "auto", md: "calc(100dvh - 182px)" },
+                    maxHeight: { xs: "none", md: "calc(100dvh - 182px)" },
+                    overflowY: { xs: "visible", md: "auto" },
+                    pr: { xs: 0, md: 1 },
+                    pb: { xs: 0, md: 1.25 },
+                    boxSizing: "border-box",
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "rgba(148,163,184,0.6) transparent",
+                    "&::-webkit-scrollbar": {
+                      width: 8,
+                    },
+                    "&::-webkit-scrollbar-track": {
+                      background: "transparent",
+                    },
+                    "&::-webkit-scrollbar-thumb": {
+                      backgroundColor: "rgba(148,163,184,0.5)",
+                      borderRadius: 999,
+                    },
+                    opacity: 0,
+                    animation:
+                      "modalTextIn 420ms cubic-bezier(0.22, 1, 0.36, 1) 70ms forwards",
+                    "@media (prefers-reduced-motion: reduce)": {
+                      opacity: 1,
+                      animation: "none",
+                    },
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "rgba(226,232,240,0.7)",
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                      fontSize: "0.8rem",
+                    }}
+                  >
+                    {selectedProject?.role}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      mt: 0.7,
+                      color: "rgba(226,232,240,0.82)",
+                      fontSize: "0.92rem",
+                    }}
+                  >
+                    {selectedProject?.company} · {selectedProject?.startDate} —{" "}
+                    {selectedProject?.endDate}
+                  </Typography>
+                  <Box
+                    sx={{
+                      mt: 1.25,
+                      color: "rgba(226,232,240,0.92)",
+                      lineHeight: 1.65,
+                    }}
+                  >
+                    <MarkdownBlock>
+                      {selectedProject?.description ||
+                        "Project details coming soon."}
+                    </MarkdownBlock>
+                  </Box>
 
-                {modalImages.length > 1 && (
-                  <>
-                    <IconButton
-                      aria-label="Previous project image"
-                      onClick={showPreviousModalImage}
-                      sx={{
-                        position: "absolute",
-                        left: { xs: 8, md: 12 },
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        zIndex: 2,
-                        color: "grey.100",
-                        backgroundColor: "rgba(0,0,0,0.38)",
-                        "&:hover": {
-                          backgroundColor: "rgba(0,0,0,0.56)",
-                        },
-                      }}
-                    >
-                      <NavigateBeforeRoundedIcon />
-                    </IconButton>
+                  <Typography
+                    sx={{ mt: 2.25, color: "grey.100", fontWeight: 700 }}
+                  >
+                    Project details
+                  </Typography>
+                  <Box
+                    sx={{
+                      mt: 1,
+                      color: "rgba(226,232,240,0.9)",
+                      lineHeight: 1.75,
+                    }}
+                  >
+                    <MarkdownBlock>
+                      {selectedProject?.projectDetails ||
+                        "Add in-depth project details here."}
+                    </MarkdownBlock>
+                  </Box>
 
-                    <IconButton
-                      aria-label="Next project image"
-                      onClick={showNextModalImage}
-                      sx={{
-                        position: "absolute",
-                        right: { xs: 8, md: 12 },
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        zIndex: 2,
-                        color: "grey.100",
-                        backgroundColor: "rgba(0,0,0,0.38)",
-                        "&:hover": {
-                          backgroundColor: "rgba(0,0,0,0.56)",
-                        },
-                      }}
-                    >
-                      <NavigateNextRoundedIcon />
-                    </IconButton>
+                  <Typography
+                    sx={{ mt: 2.25, color: "grey.100", fontWeight: 700 }}
+                  >
+                    My thoughts on the project
+                  </Typography>
+                  <Box
+                    sx={{
+                      mt: 1,
+                      color: "rgba(226,232,240,0.9)",
+                      lineHeight: 1.75,
+                    }}
+                  >
+                    <MarkdownBlock>
+                      {selectedProject?.personalThoughts ||
+                        "Add your personal perspective here: what made this project meaningful, what you learned, and what you would improve next."}
+                    </MarkdownBlock>
+                  </Box>
 
-                    <Stack
-                      direction="row"
-                      spacing={0.8}
-                      sx={{
-                        position: "absolute",
-                        left: "50%",
-                        bottom: 10,
-                        transform: "translateX(-50%)",
-                        zIndex: 2,
-                        px: 1,
-                        py: 0.5,
-                        borderRadius: 99,
-                        backgroundColor: "rgba(0,0,0,0.38)",
-                      }}
-                    >
-                      {modalImages.map((_, index) => {
-                        const isActive = index === modalImageIndex;
+                  <Typography
+                    sx={{ mt: 2.25, color: "grey.100", fontWeight: 700 }}
+                  >
+                    What I contributed
+                  </Typography>
+                  <Box
+                    sx={{
+                      mt: 1,
+                      color: "rgba(226,232,240,0.9)",
+                      lineHeight: 1.75,
+                    }}
+                  >
+                    <MarkdownBlock>
+                      {selectedProject?.contributions ||
+                        "Add your direct contributions here."}
+                    </MarkdownBlock>
+                  </Box>
 
-                        return (
-                          <Box
-                            key={`modal-dot-${index}`}
-                            component="button"
-                            type="button"
-                            onClick={() => setModalImageIndex(index)}
-                            aria-label={`Go to image ${index + 1}`}
-                            sx={{
-                              width: 8,
-                              height: 8,
-                              borderRadius: "50%",
-                              border: "none",
-                              p: 0,
-                              cursor: "pointer",
-                              backgroundColor: isActive
-                                ? "rgba(248,250,252,0.98)"
-                                : "rgba(148,163,184,0.72)",
-                              transition: "transform 180ms ease, background-color 180ms ease",
-                              transform: isActive ? "scale(1.15)" : "scale(1)",
-                            }}
-                          />
-                        );
-                      })}
-                    </Stack>
-                  </>
-                )}
-              </Box>
+                  <Stack
+                    direction="row"
+                    spacing={0.8}
+                    useFlexGap
+                    flexWrap="wrap"
+                    sx={{ mt: 2 }}
+                  >
+                    {(selectedProject?.stack || []).map((item) => (
+                      <Chip
+                        key={item}
+                        size="small"
+                        label={item}
+                        sx={{
+                          color: "grey.100",
+                          backgroundColor: "rgba(15,23,42,0.72)",
+                          border: "1px solid rgba(203,213,225,0.25)",
+                        }}
+                      />
+                    ))}
+                  </Stack>
+
+                  <Button
+                    href={selectedProject?.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    variant="outlined"
+                    sx={{
+                      mt: 2.25,
+                      color: "grey.50",
+                      borderColor: "rgba(203,213,225,0.34)",
+                    }}
+                  >
+                    Visit Project
+                  </Button>
+                </Box>
+
+                <Box
+                  key={`modal-image-${modalAnimationKey}`}
+                  sx={{
+                    gridArea: "media",
+                    position: { xs: "relative", md: "sticky" },
+                    top: { xs: "auto", md: 0 },
+                    height: {
+                      xs: "min(52vh, 380px)",
+                      md: "min(62vh, 640px)",
+                    },
+                    maxHeight: "calc(100dvh - 170px)",
+                    borderRadius: 1.5,
+                    overflow: "hidden",
+                    border: "1px solid rgba(203,213,225,0.2)",
+                    backgroundColor: "rgba(15,23,42,0.5)",
+                    opacity: 0,
+                    animation: "modalImageIn 460ms ease 190ms forwards",
+                    "@media (prefers-reduced-motion: reduce)": {
+                      opacity: 1,
+                      animation: "none",
+                    },
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={activeModalImage}
+                    alt={`${selectedProject?.name || "Project"} preview ${modalImageIndex + 1}`}
+                    sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+
+                  {modalImages.length > 1 && (
+                    <>
+                      <IconButton
+                        aria-label="Previous project image"
+                        onClick={showPreviousModalImage}
+                        sx={{
+                          position: "absolute",
+                          left: { xs: 8, md: 12 },
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          zIndex: 2,
+                          color: "grey.100",
+                          backgroundColor: "rgba(0,0,0,0.38)",
+                          "&:hover": {
+                            backgroundColor: "rgba(0,0,0,0.56)",
+                          },
+                        }}
+                      >
+                        <NavigateBeforeRoundedIcon />
+                      </IconButton>
+
+                      <IconButton
+                        aria-label="Next project image"
+                        onClick={showNextModalImage}
+                        sx={{
+                          position: "absolute",
+                          right: { xs: 8, md: 12 },
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          zIndex: 2,
+                          color: "grey.100",
+                          backgroundColor: "rgba(0,0,0,0.38)",
+                          "&:hover": {
+                            backgroundColor: "rgba(0,0,0,0.56)",
+                          },
+                        }}
+                      >
+                        <NavigateNextRoundedIcon />
+                      </IconButton>
+
+                      <Stack
+                        direction="row"
+                        spacing={0.8}
+                        sx={{
+                          position: "absolute",
+                          left: "50%",
+                          bottom: 10,
+                          transform: "translateX(-50%)",
+                          zIndex: 2,
+                          px: 1,
+                          py: 0.5,
+                          borderRadius: 99,
+                          backgroundColor: "rgba(0,0,0,0.38)",
+                          alignItems: "center",
+                        }}
+                      >
+                        {modalImages.map((_, index) => {
+                          const isActive = index === modalImageIndex;
+                          const isComplete = index < modalImageIndex;
+
+                          return (
+                            <Box
+                              key={`modal-dot-${index}`}
+                              component="button"
+                              type="button"
+                              onClick={() => setModalImageIndex(index)}
+                              aria-label={`Go to image ${index + 1}`}
+                              sx={{
+                                width: { xs: 22, md: 28 },
+                                height: 5,
+                                borderRadius: 999,
+                                border: "none",
+                                p: 0,
+                                cursor: "pointer",
+                                overflow: "hidden",
+                                backgroundColor: "rgba(148,163,184,0.4)",
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  width: "100%",
+                                  height: "100%",
+                                  borderRadius: 999,
+                                  backgroundColor: "rgba(248,250,252,0.98)",
+                                  transformOrigin: "left center",
+                                  transform:
+                                    isActive || isComplete
+                                      ? "scaleX(1)"
+                                      : "scaleX(0)",
+                                  animation: isActive
+                                    ? `modalIndicatorFill ${MODAL_IMAGE_ROTATE_MS}ms linear forwards`
+                                    : "none",
+                                  transition: isActive
+                                    ? "none"
+                                    : "transform 180ms ease",
+                                }}
+                              />
+                            </Box>
+                          );
+                        })}
+                      </Stack>
+                    </>
+                  )}
+                </Box>
               </Box>
             </Box>
           </Box>
