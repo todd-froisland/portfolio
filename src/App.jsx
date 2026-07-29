@@ -728,13 +728,39 @@ function App() {
             Todd Froisland
           </Typography>
           <Typography
-            sx={{ maxWidth: "64ch", color: "rgba(226,232,240,0.95)" }}
+            sx={{
+              maxWidth: "64ch",
+              color: "rgba(226,232,240,0.95)",
+              "& a": {
+                color: "rgba(147,197,253,0.96)",
+                textDecoration: "none",
+              },
+              "& a:hover": {
+                color: "rgba(191,219,254,1)",
+              },
+            }}
           >
-            By day building e-commerce and POS systems for Purple Innovation. 
-            <br/>
-            By night building BranchOps - an agent orchestration platform. 
-            <br/>
-            Built and continually working on HipDeck Digital Signage.
+            By day building e-commerce and POS systems for{" "}
+            <a href="https://www.purple.com" target="_blank" rel="noreferrer">
+              Purple Innovation
+            </a>
+            .
+            <br />
+            By night building{" "}
+            <a
+              href="https://branchops-mp5jh.ondigitalocean.app/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              BranchOps
+            </a>{" "}
+            - an agent orchestration platform.
+            <br />
+            Built and continually working on{" "}
+            <a href="https://hipdeck.co" target="_blank" rel="noreferrer">
+              HipDeck Digital Signage
+            </a>
+            .
           </Typography>
           <Stack
             direction="row"
