@@ -123,6 +123,20 @@ HipDeck has been my opportunity to do exactly that.`,
     contributions:
       "Add details about your direct contributions, technical decisions, and ownership areas here.",
     stack: ["POS", "Stripe Terminal", "Clover", "Payments"],
+    personalThoughts: `## Thoughts on MPOS
+
+Mobile point-of-sale systems are commonplace in software, but they're far more complex than they appear at first glance. Processing a standard checkout isn't especially difficult, particularly when platforms like CommerceTools handle much of the backend complexity. The real challenges emerge when you introduce multiple payment methods and different shipping methods for individual line items.
+
+To keep the system maintainable—and the test matrix from exploding—we limited orders to a maximum of three payments. Without that constraint, the number of possible payment combinations became impractical to reason about and verify. Shipping introduced its own challenges. To satisfy user requirements while remaining compatible with our existing backend, we had to determine the valid shipping methods for every line item, then group items together by their selected shipping method before checkout. It's one of those pieces of logic that seems straightforward until you have to build it correctly, and it's a system that still influences the application today.
+
+Everything before the transaction was my responsibility. Product browsing, cart management, shipping address collection, shipping method selection, and checkout orchestration all fell under my ownership. We initially integrated with Clover for payments before migrating to Stripe, and later added financing through a then-young company called ChargeAfter.
+
+I really cut my software teeth on this application.
+
+This was the early 2020s, before AI-assisted development became commonplace. Much less code could be generated automatically, so every architectural decision, state transition, and edge case had to be reasoned through deliberately. Looking back, I'm grateful for that experience. Building a production system from first principles taught me how software actually works beneath the abstractions.
+
+Over time I've realized that this isn't a universal experience. Many developers join large organizations where the architecture already exists, patterns are well established, and their work is confined to a small slice of a much larger system. There's nothing wrong with that, but having the opportunity to build something understandable from the ground up gave me an intuition for software that continues to shape how I approach engineering today.
+`,
     url: "https://mpos.purple.com",
     role: "Software Engineer",
     logo: purpleLogo,
